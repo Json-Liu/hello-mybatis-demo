@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<bean id="baseDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="maxPoolSize" value="30" />
+		<property name="minPoolSize" value="10" />
+		<property name="maxIdleTime" value="500" />
+		<property name="autoCommitOnClose" value="true" />  
+		<property name="initialPoolSize" value="5" />
+		<property name="jdbcUrl" value="jdbc:mysql://localhost:3306/mybatis_demo?useUnicode=true&amp;zeroDateTimeBehavior=convertToNull&amp;autoReconnect=true" />
+		<property name="user" value="root" />
+		<property name="checkoutTimeout" value="0" />
+		<property name="password" value="abc12345" />
+		<property name="acquireRetryAttempts" value="30" />		
+		<property name="acquireRetryDelay" value="1000" />		
+		<property name="breakAfterAcquireFailure" value="false" />	
+		<property name="driverClass" value="com.mysql.jdbc.Driver" />
+	</bean>
+
+    <bean id="transactionManager"  
+        class="org.springframework.jdbc.datasource.DataSourceTransactionManager">  
+        <property name="dataSource" ref="baseDataSource" />  
+    </bean>  
+
+	 <bean id="baseSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="baseDataSource" />
+		<property name="configLocation" value="classpath:spring/myBatis-config.xml"></property>
+		<property name="typeAliasesPackage" value="com.joson.bean;"/>
+		<property  name="mapperLocations"  >
+				<list>
+					<value>classpath*:mapper/*.xml</value>
+					<value>classpath*:mapper/generate/*.xml</value>
+				</list>
+		</property>
+	</bean>
+
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.joson.dao;" />
+		<property name="sqlSessionFactory" ref="baseSqlSessionFactory" />                         
+	</bean> 
+</beans>
+

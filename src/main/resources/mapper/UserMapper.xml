@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.joson.dao.UserMapper" >
+  <!-- 插入用户 -->
+  <insert id="insertUser" parameterType="com.joson.bean.User" >
+    insert into user (user_id, user_name, user_school, user_age)  values 
+    (#{userId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{userSchool,jdbcType=VARCHAR}, #{userAge,jdbcType=INTEGER})
+  </insert>
+   <!-- 插入用户 并回写自增主键的值-->
+  <insert id="insertUserAndReturn" parameterType="com.joson.bean.User" >
+    <selectKey keyProperty="id" resultType="int">
+           select LAST_INSERT_ID()
+    </selectKey>
+    insert into user (user_id, user_name, user_school, user_age)  values 
+    (#{userId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{userSchool,jdbcType=VARCHAR}, #{userAge,jdbcType=INTEGER})
+  </insert>
+  <!-- 获取全部用户信息 -->
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from user
+  </select>
+  <!-- 分页获取用户信息 -->
+  <select id="selectByPage" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from user limit #{startIndex},#{count}
+  </select>
+  <!-- 根据用户ID列表获取对应的纪录 -->
+  <select id="selectByIdList" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where id in 
+    <!-- collection 表示集合参数名 必须可迭代  item 表示每次迭代的具体值  open 表示迭代结果的开头符号 separator 表示迭代结果的分隔符  close 表示迭代结果的结尾符号 -->
+    <foreach collection="ids" item = "id" open = "(" separator = "," close = ")" >
+    	#{id}
+    </foreach>
+  </select>
+  <!-- 多重条件查询 -->
+ <select id="multiCriteria" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    <where>
+    	<if test="school != null ">
+    		and user_school like #{school} 
+    	</if>
+    	<if test="age != null">
+    		and user_age = #{age}  
+    	</if>
+    </where> 
+  </select>
+  <!-- 多重条件的MAP查询 -->
+ <select id="multiCriteriaWithMap" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    <where>
+    	<if test="school != null ">
+    		and user_school like #{school} 
+    	</if>
+    	<if test="age != null">
+    		and user_age = #{age}  
+    	</if>
+    </where> 
+  </select>  
+</mapper>
