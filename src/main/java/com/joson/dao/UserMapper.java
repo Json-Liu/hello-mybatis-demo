@@ -27,7 +27,12 @@ public interface UserMapper {
     * 根据主键更新纪录：     表 user
     **/
     int updateByPrimaryKey(User record);
-    
+    /**
+     * 批量插入
+     * @param list
+     * @return
+     */
+    int batchInsert(@Param("list") List<User> list );
     /**
      * 新增用户
      * @param record

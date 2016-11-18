@@ -27,6 +27,20 @@ public class UserMapperTest {//
 	@Autowired
 	private UserMapper userMapper;
 	@Test
+	public void test_batchInsert(){
+		List<User> list = Lists.newArrayList();
+		for (int i = 0; i < 10; i++) {
+			User record = new User();
+			record.setUserId(genUid());
+			record.setUserName("TestUser"+i);
+			record.setUserSchool("华南师范");
+			record.setUserAge(25+i);
+			list.add(record);
+		}
+		int batchInsert = userMapper.batchInsert(list);
+		assertTrue(batchInsert == 10 );
+	}
+	@Test
 	public void test_insertUser(){//新增用户测试
 		User record = new User();
 		record.setUserId(genUid());
