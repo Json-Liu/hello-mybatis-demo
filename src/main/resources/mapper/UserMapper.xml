@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.joson.dao.UserMapper" >
+ <!-- 批量插入 -->
+  <insert id="batchInsert" parameterType="list" >
+    insert into user (user_id, user_name, user_school, user_age)  values 
+    <foreach item="item" collection="list" separator=",">
+    (#{item.userId,jdbcType=VARCHAR}, #{item.userName,jdbcType=VARCHAR}, #{item.userSchool,jdbcType=VARCHAR}, #{item.userAge,jdbcType=INTEGER})
+  	</foreach>
+  </insert>
   <!-- 插入用户 -->
   <insert id="insertUser" parameterType="com.joson.bean.User" >
     insert into user (user_id, user_name, user_school, user_age)  values 
